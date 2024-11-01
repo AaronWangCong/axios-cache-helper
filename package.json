@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json.schemastore.org/jsconfig",
+  "name": "axios-cache-helper",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "重复请求优化-基于axios的缓存策略,处理重复请求",
+  "author": "AaronWangCong",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AaronWangCong/axios-cache-helper.git"
+  },
+  "keywords": [
+    "axios",
+    "cache",
+    "axios-cache-helper",
+    "axios-cache"
+  ],
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean:dist": "rimraf dist",
+    "build": "tsup",
+    "build:fix": "esno scripts/postbuild.ts",
+    "lint:lint-staged": "lint-staged",
+    "release-major": "standard-version --release-as major",
+    "release-minor": "standard-version --release-as minor",
+    "release-patch": "standard-version --release-as patch",
+    "commit": "git-cz",
+    "cz": "node scripts/commit.js && npm run commit",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "3.7.3",
+    "@eslint/js": "^9.13.0",
+    "eslint": "9.12.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-antfu": "2.7.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-vue": "^9.29.1",
+    "git-cz": "^4.9.0",
+    "globals": "^15.11.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.10",
+    "prettier": "^3.0.0",
+    "rimraf": "^5.0.5",
+    "standard-version": "^9.5.0",
+    "tsup": "^8.2.4",
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^8.11.0"
+  },
+  "dependencies": {
+    "axios": "^1.7.7"
+  },
+  "config": {
+    "commitizen": {
+      "path": "git-cz"
+    }
+  },
+  "standard-version": {
+    "skip": {
+      "tag": true
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,vue}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "package.json": [
+      "prettier --write"
+    ],
+    "*.{scss,less,styl,html}": [
+      "stylelint --fix --allow-empty-input",
+      "prettier --write"
+    ],
+    "*.md": [
+      "prettier --write"
+    ]
+  },
+  "packageManager": "pnpm@8.9.0"
+}
