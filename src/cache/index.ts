@@ -1,34 +1,43 @@
 import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 
 type RequestConfig = {
-  requestType?: string
-  /** 接口是否携带前缀 */
-  noApiPrefix?: boolean
-  /** 是否开启mock */
-  mock?: boolean
-  /** 是否返回响应体全部数据 */
-  isFetch?: boolean
   /** 请求key */
   pendKey?: string
+  /** 不否使用缓存 */
+  isNoCache?: boolean
 } & AxiosRequestConfig
 
 type ICbFn = (res: any) => void
 
+interface IOptions {
+  /** 节流时间-时间毫秒内连续的相同请求会取缓存的数据返回给业务侧 */
+  throttlingTime: number
+  /** 忽略的请求地址 */
+  ignoreRequest: (string | RegExp)[]
+}
+
 /** 发布订阅 */
 class EventEmitter {
+  /** 订阅事件 */
   event: { [key: string]: ICbFn[][] }
+  /** 节流时间-时间毫秒内连续的相同请求会取缓存的数据返回给业务侧 */
+  throttlingTime: IOptions['throttlingTime']
+  /** 忽略的请求地址 */
+  ignoreRequest: IOptions['ignoreRequest']
   constructor() {
     this.event = {}
+    this.throttlingTime = 200
+    this.ignoreRequest = []
   }
 
-  // 订阅事件
+  /** 订阅事件 */
   on(key: string, resolve: ICbFn, reject: ICbFn) {
     if (!this.event[key])
       this.event[key] = [[resolve, reject]]
     else this.event[key].push([resolve, reject])
   }
 
-  // 发布事件
+  /** 发布事件 */
   emit(key: string, res: any, cbType: 'resolve' | 'reject') {
     if (this.event[key]) {
       this.event[key].forEach((cbArr) => {
@@ -38,14 +47,18 @@ class EventEmitter {
       })
     }
   }
+
+  /** 初始化参数 */
+  init({ throttlingTime = 200, ignoreRequest = [] }: IOptions) {
+    this.throttlingTime = throttlingTime
+    this.ignoreRequest = ignoreRequest
+  }
 }
 
 /** 存储已发送但未响应的请求 */
 const pendingRequest = new Set()
 /** 发布订阅容器 */
 const eventBox = new EventEmitter()
-/** 节流时间-时间毫秒内连续的相同请求会取缓存的数据返回给业务侧 */
-const throttlingTime = 200
 
 /** 根据请求生成对应的key */
 function generateReqKey(config: RequestConfig, pathname: string) {
@@ -61,6 +74,9 @@ function generateReqKey(config: RequestConfig, pathname: string) {
 
 /** 接口请求缓存-阻止重复请求 */
 export async function optimizationCacheReq(config: RequestConfig) {
+  if (config.isNoCache || isIgnoreHttp(config.url))
+    return
+
   // 获取hash
   const pathname = location.pathname
   // 生成请求Key
@@ -113,7 +129,7 @@ export function optimizationCacheSuccessRes(
       eventBox.emit(reqKey, res, 'resolve')
       pendingRequest.delete(reqKey)
       delete eventBox.event[reqKey]
-    }, throttlingTime)
+    }, eventBox.throttlingTime)
   }
 }
 
@@ -145,8 +161,34 @@ export function optimizationCacheErrorsRes(error: {
         pendingRequest.delete(reqKey)
         eventBox.emit(reqKey, res, 'reject')
         delete eventBox.event[reqKey]
-      }, throttlingTime)
+      }, eventBox.throttlingTime)
     }
   }
   return Promise.reject(error)
+}
+
+export function isRegExp(v: any) {
+  return Object.prototype.toString.call(v) === `[object RegExp]`
+}
+
+/** 判断请求地址是否为需要拦截的 */
+function isIgnoreHttp(url?: string): boolean {
+  if (!eventBox.ignoreRequest.length || !url)
+    return false
+  return eventBox.ignoreRequest.some((item) => {
+    if (isRegExp(item))
+      return (item as RegExp).test(url)
+    else return url === item
+  })
+}
+
+/** 初始化方法 */
+export function useOptimizationCache(options?: IOptions) {
+  options && eventBox.init(options)
+
+  return {
+    optimizationCacheReq,
+    optimizationCacheSuccessRes,
+    optimizationCacheErrorsRes,
+  }
 }

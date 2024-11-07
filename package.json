@@ -1,14 +1,14 @@
 {
   "$schema": "https://json.schemastore.org/jsconfig",
   "name": "axios-cache-helper",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "type": "module",
   "description": "重复请求优化-基于axios的缓存策略,处理重复请求",
   "author": "AaronWangCong",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AaronWangCong/axios-cache-helper.git"
+    "url": "https://git.shijizhongyun.com/Front/Gotofreight-axios-cache.git"
   },
   "keywords": [
     "axios",
@@ -16,7 +16,8 @@
     "axios-cache-helper",
     "axios-cache"
   ],
-  "main": "dist/index.mjs",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist",
@@ -26,28 +27,35 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean:dist": "rimraf dist",
     "build": "tsup",
-    "build:fix": "esno scripts/postbuild.ts",
     "lint:lint-staged": "lint-staged",
     "release-major": "standard-version --release-as major",
     "release-minor": "standard-version --release-as minor",
     "release-patch": "standard-version --release-as patch",
+    "release:push": "esno scripts/publish.ts",
     "commit": "git-cz",
-    "cz": "node scripts/commit.js && npm run commit",
-    "prepare": "husky install"
+    "cz": "esno scripts/commit.ts && npm run commit",
+    "prepare": "husky install",
+    "release": "esno scripts/release.ts",
+    "push": "npm publish --registry=http://192.168.80.104:4873"
   },
   "devDependencies": {
     "@antfu/eslint-config": "3.7.3",
     "@eslint/js": "^9.13.0",
+    "@types/node": "^22.8.5",
+    "@types/prompts": "^2.4.9",
     "eslint": "9.12.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-antfu": "2.7.0",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-vue": "^9.29.1",
+    "esno": "^4.8.0",
     "git-cz": "^4.9.0",
     "globals": "^15.11.0",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.10",
+    "node-fetch": "^3.3.2",
     "prettier": "^3.0.0",
+    "prompts": "^2.4.2",
     "rimraf": "^5.0.5",
     "standard-version": "^9.5.0",
     "tsup": "^8.2.4",
