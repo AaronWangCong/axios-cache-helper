@@ -1,14 +1,15 @@
 {
   "$schema": "https://json.schemastore.org/jsconfig",
   "name": "axios-cache-helper",
-  "version": "0.0.6",
   "type": "module",
+  "version": "0.0.1",
+  "packageManager": "pnpm@8.9.0",
   "description": "重复请求优化-基于axios的缓存策略,处理重复请求",
   "author": "AaronWangCong",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://git.shijizhongyun.com/Front/Gotofreight-axios-cache.git"
+    "url": "https://github.com/AaronWangCong/axios-cache-helper.git"
   },
   "keywords": [
     "axios",
@@ -36,7 +37,10 @@
     "cz": "esno scripts/commit.ts && npm run commit",
     "prepare": "husky install",
     "release": "esno scripts/release.ts",
-    "push": "npm publish --registry=http://192.168.80.104:4873"
+    "push": "npm publish --registry=https://www.npmjs.com/"
+  },
+  "dependencies": {
+    "axios": "^1.7.7"
   },
   "devDependencies": {
     "@antfu/eslint-config": "3.7.3",
@@ -61,9 +65,6 @@
     "tsup": "^8.2.4",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.11.0"
-  },
-  "dependencies": {
-    "axios": "^1.7.7"
   },
   "config": {
     "commitizen": {
@@ -90,6 +91,5 @@
     "*.md": [
       "prettier --write"
     ]
-  },
-  "packageManager": "pnpm@8.9.0"
+  }
 }
