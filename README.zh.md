@@ -1,6 +1,6 @@
 # Axios-Cache-Helper
 
-English | [简体中文](README.zh.md)
+[English](README.md) | 简体中文
 
 <p align="center">
   <a href="https://www.npmjs.org/package/axios-cache-helper">
@@ -11,21 +11,21 @@ English | [简体中文](README.zh.md)
   </a>
   <br>
 </p>
-Repeated request optimization Based on axios cache policy, duplicate requests are handled. In principle, the same concurrent request is cached. There will be only one request, and other requests will directly return the results, reducing server pressure, reducing unnecessary requests, and improving performance.
+重复请求优化-基于axios的缓存策略,处理重复请求,原则上是对并发的相同请求进行缓存，只会有一次请求，其他请求直接返回结果，减少服务器压力，减少不必要的请求，提高性能。
 
-## Install
+## 安装
 
 ```bash
 pnpm install axios-cache-helper
 ```
 
-## Use
+## 使用
 
-- **useOptimizationCache It is an initialization configuration method that uses default configuration when not calling or passing values**
-- **ignoreRequest Ignore the request address, do not cache it, support strings or regularization such as `/getOrder`**
-- **throttlingTime Repeat request interval time, default 200ms**
+- **useOptimizationCache 是初始化配置方法，不调用、不传值时使用默认配置**
+- **ignoreRequest 忽略的请求地址，不进行缓存处理，支持字符串或者正则例如/getOrder/**
+- **throttlingTime 重复请求间隔时间，默认200ms**
 
-#### Import method 1 (used within the same file)
+导入方式1（在同一个文件时使用）
 
 ```ts
 import { useOptimizationCache } from 'axios-cache-helper';
@@ -35,7 +35,7 @@ const {
   optimizationCacheReq,
   optimizationCacheSuccessRes,
 } = useOptimizationCache();
-// OR
+// 或者
 const {
   optimizationCacheErrorsRes,
   optimizationCacheReq,
@@ -46,7 +46,7 @@ const {
 });
 ```
 
-#### Import method 2 (can be directly imported from the library for different files)
+导入方式2（在不同文件时可分别直接从库中导入）
 
 ```ts
 import {
@@ -57,18 +57,18 @@ import {
 } from 'axios-cache-helper';
 
 useOptimizationCache();
-// OR
+// 或者
 useOptimizationCache({ throttlingTime: 200, ignoreRequest: [] });
 ```
 
-#### Call method
+调用
 
 ```ts
-// Configure axios request configuration in the request interceptor
+// 请求拦截器中 config axios请求配置
 await optimizationCacheReq(config);
 
-// Successful response axios configuration in response interceptor
+// 响应拦截器中 成功 response axios响应配置
 optimizationCacheSuccessRes(response);
-// Failed response axios configuration in response interceptor
+// 响应拦截器中 失败 response axios响应配置
 optimizationCacheErrorsRes(error);
 ```
